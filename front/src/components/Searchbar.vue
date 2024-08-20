@@ -2,14 +2,10 @@
   <div class="container">
     <section class="input-container">
       <v-autocomplete @update:search="search" item-title="name" item-value="id" class="autocomplete"
-        label="Search Spotify playlist" :items="playlists" variant="outlined"
-        :hide-no-data="true">
-        <template v-slot:append>
-           
-        </template>
+        label="Search Spotify playlist" :items="playlists" variant="outlined" :hide-no-data="true">
         <template v-slot:item="{ props, item }">
-          <v-list-item @click="playlistSelected(item, $router)" v-bind="props" :prepend-avatar="getImage(item.raw)" :subtitle="sliceStr(item.raw.description)"
-            :title="sliceStr(item.title)"></v-list-item>
+          <v-list-item @click="playlistSelected(item, $router)" v-bind="props" :prepend-avatar="getImage(item.raw)"
+            :subtitle="sliceStr(item.raw.description)" :title="sliceStr(item.title)"></v-list-item>
         </template>
       </v-autocomplete>
     </section>
@@ -42,8 +38,8 @@ export default {
       if (str.includes('https')) {
         return '';
       }
-      let desc = str ? str.toString().slice(0, 47) : '';
-      if (desc.length === 47) {
+      let desc = str ? str.toString().slice(0, 25) : '';
+      if (desc.length === 25) {
         desc += '...';
       }
       return desc;

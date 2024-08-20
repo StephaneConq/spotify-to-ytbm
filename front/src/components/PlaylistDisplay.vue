@@ -72,6 +72,8 @@ export default {
     justify-content: center;
     align-items: center;
     height: fit-content;
+    width: 100%;
+    padding: 5px;
 }
 
 .copy-actions {

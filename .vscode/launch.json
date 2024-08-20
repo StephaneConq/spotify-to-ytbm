@@ -7,7 +7,7 @@
         {
             "name": "Python Debugger: Back",
             "type": "debugpy",
-            "cwd": "back",
+            "cwd": "./back",
             "request": "launch",
             "program": "main.py",
             "console": "integratedTerminal",

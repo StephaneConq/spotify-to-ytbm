@@ -2,13 +2,16 @@
   <v-progress-linear v-if="loading" color="primary" indeterminate></v-progress-linear>
   <main>
     <div class="toolbar-container">
-      <div>
+      <div class="flex1">
         <v-btn icon="mdi-arrow-left" @click="$router.push('/')"></v-btn>
       </div>
 
-      <img class="img" src="logo.png" />
+      <div class="flex2">
+        <img class="img" src="logo.png" />
+      </div>
 
-      <div></div>
+      <div class="flex1">
+      </div>
     </div>
 
     <router-view />
@@ -46,7 +49,6 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
 }
 
 main {
@@ -57,8 +59,7 @@ main {
 }
 
 .img {
-  margin: 10px;
-  width: 200px;
+  width: 96px;
 }
 
 .toolbar-container {
@@ -66,5 +67,14 @@ main {
   flex-direction: row;
   justify-content: space-between;
   width: 100%;
+  padding: 10px 0;
+}
+
+.toolbar-container > .flex1 {
+  width: 48px;
+}
+
+.toolbar-container > .flex2 {
+  width: 96px;
 }
 </style>

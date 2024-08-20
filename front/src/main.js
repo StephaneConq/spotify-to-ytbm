@@ -13,6 +13,22 @@ import * as directives from 'vuetify/directives'
 const vuetify = createVuetify({
     components,
     directives,
+    theme: {
+        defaultTheme: 'dark',
+        themes: {
+            dark: {
+                dark: true,
+                variables: {}, // ✅ this property is required to avoid Vuetify crash
+
+                colors: {
+                    primary: '#1bcf5e',
+                    secondary: 'white',
+                    accent: '#e101a0',
+                    error: '#b71c1c',
+                },
+            }
+        }
+    }
 })
 
 
