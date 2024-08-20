@@ -5,11 +5,15 @@
         <h2>{{ playlist.name }}</h2>
 
         <h3>{{ playlist.description }}</h3>
+
+        <section class="copy-actions">
+            <v-btn @click="openDialog" icon="mdi-content-copy" size="large"></v-btn>
+        </section>
     </div>
 </template>
 
 <script>
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
 import { useStore } from 'vuex';
 
 export default {
@@ -22,9 +26,40 @@ export default {
             return playlist.value.images ? playlist.value.images[0].url : null;
         }
 
+        watch(
+            () => store.state.utils.isConfirmed,
+            (newIsConfirmed) => {
+                if (newIsConfirmed) {
+                    store.dispatch('spotify/startCopy', { playlistId: playlist.value.id }).then(() => {
+                        store.commit('utils/toggleSnackbar', {
+                            snackbar: true,
+                            snackbarText: 'Création de playlist lancée'
+                        });
+                        setTimeout(() => {
+                            store.commit('utils/toggleSnackbar', {
+                                snackbar: false,
+                                snackbarText: ''
+                            });
+                        }, 3000);
+                    });
+                }
+            }
+        )
+
+        const openDialog = () => {
+            store.commit('utils/toggleDialog', {
+                confirmDialog: true,
+                confirmOptions: {
+                    title: 'Copier playlist',
+                    text: 'Copier la playlist sur Youtube Music ?'
+                }
+            });
+        }
+
         return {
             playlist,
-            getImage
+            getImage,
+            openDialog
         }
     }
 }
@@ -37,5 +72,9 @@ export default {
     justify-content: center;
     align-items: center;
     height: fit-content;
+}
+
+.copy-actions {
+    width: 100%;
 }
 </style>

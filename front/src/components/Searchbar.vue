@@ -1,19 +1,18 @@
 <template>
   <div class="container">
     <section class="input-container">
-      <v-autocomplete @update:search="search" item-title="name" item-value="id" :loading="loading" class="autocomplete"
+      <v-autocomplete @update:search="search" item-title="name" item-value="id" class="autocomplete"
         label="Search Spotify playlist" :items="playlists" variant="outlined"
-        @update:modelValue="playlistSelected($event, $router)" :hide-no-data="true">
+        :hide-no-data="true">
         <template v-slot:append>
            
         </template>
         <template v-slot:item="{ props, item }">
-          <v-list-item v-bind="props" :prepend-avatar="getImage(item.raw)" :subtitle="sliceStr(item.raw.description)"
+          <v-list-item @click="playlistSelected(item, $router)" v-bind="props" :prepend-avatar="getImage(item.raw)" :subtitle="sliceStr(item.raw.description)"
             :title="sliceStr(item.title)"></v-list-item>
         </template>
       </v-autocomplete>
     </section>
-    <v-progress-circular v-if="loading" indeterminate color="primary"></v-progress-circular>
   </div>
 </template>
 
@@ -23,11 +22,14 @@ import { useStore } from 'vuex';
 
 export default {
   name: 'search-bar',
+  unmounted() {
+    this.$store.commit('spotify/setPlaylists', []);
+  },
   setup() {
     const store = useStore();
     let timeoutValue = null;
-    let loading = false;
     const playlists = computed(() => store.getters['spotify/playlists']);
+    let allowedSearch = true;
 
     const getImage = (item) => {
       if (item.images && item.images.length) {
@@ -47,11 +49,15 @@ export default {
       return desc;
     }
 
-    const playlistSelected = function (event, router) {
-      router.push(`/playlist/${event}/tracks`);
+    const playlistSelected = function (playlist, router) {
+      allowedSearch = false;
+      router.push(`/playlist/${playlist.value}/tracks`);
     }
 
     const search = (event) => {
+      if (!allowedSearch) {
+        return;
+      }
       if (!event?.length) {
         store.commit('spotify/setPlaylists', []);
         return;
@@ -75,8 +81,7 @@ export default {
       search,
       getImage,
       sliceStr,
-      playlistSelected,
-      loading
+      playlistSelected
     }
   }
 }

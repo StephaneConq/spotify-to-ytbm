@@ -8,6 +8,7 @@ app = FastAPI()
 
 origins = [
     "http://localhost:8080",
+    "https://sty-front-rwskuq36ya-ew.a.run.app"
 ]
 
 app.add_middleware(
@@ -19,12 +20,6 @@ app.add_middleware(
 )
 
 app.include_router(spotify_router)
-
-# service = YoutubeMusic()
-# res = service.search('itzy wannabe')
-
-# with open('test.json', 'w') as f:
-#     json.dump(res, f)
 
 
 if __name__ == "__main__":

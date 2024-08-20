@@ -25,9 +25,19 @@ export default {
             const scrollHeight = card.scrollHeight;
 
             if (scrollPosition >= scrollHeight) {
-                console.log('User has scrolled to the bottom of the element!');
+                this.$store.commit('spotify/setCurrentPage', this.$store.state.spotify.page + 1);
+                this.$store.commit('utils/toggleLoading', true);
+                this.$store.dispatch('spotify/fetchTracklist', {
+                    page: this.$store.state.spotify.page
+                }).then(() => {
+                    this.$store.commit('utils/toggleLoading', false);
+                });
             }
         }
+    },
+    unmounted() {
+        this.$store.commit('spotify/setTracklist', []);
+        this.$store.commit('spotify/setCurrentPlaylist', null);
     },
     setup() {
         const store = useStore();
@@ -38,13 +48,13 @@ export default {
         watch(
             () => store.state.spotify.tracklist,
             (newTracks) => {
-                items.value = newTracks.map(track => {
+                items.value = items.value.concat(newTracks.map(track => {
                     return {
                         prependAvatar: track.track.album.images[0].url,
                         title: track.track.name,
                         subtitle: track.track.artists.map(a => a.name).join(', ')
                     }
-                });
+                }));
             }
         )
 

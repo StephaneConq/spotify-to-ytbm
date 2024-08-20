@@ -4,7 +4,8 @@ export default {
   state: () => ({
     playlists: [],
     playlist: null,
-    tracklist: []
+    tracklist: [],
+    page: 1
   }),
   getters: {
     playlist(state) {
@@ -15,6 +16,9 @@ export default {
     },
     tracklist(state) {
       return state.tracklist ?? [];
+    },
+    page(state) {
+      return state.page;
     }
   },
   actions: {
@@ -23,8 +27,14 @@ export default {
       const res = await req.json();
       commit('setPlaylists', res);
     },
-    async fetchTracklist({ commit }, payload) {
-      const req = await fetch(`${process.env.VUE_APP_API_URL}/spotify/playlist/${payload.playlistId}/tracks?page=${payload.page}`);
+    async fetchTracklist({ state, commit }, payload) {
+      let playlistId = null;
+      if (!payload.playlistId && state.playlist) {
+        playlistId = state.playlist.id;
+      } else {
+        playlistId = payload.playlistId;
+      }
+      const req = await fetch(`${process.env.VUE_APP_API_URL}/spotify/playlist/${playlistId}/tracks?page=${payload.page}`);
       const res = await req.json();
       commit('setTracklist', res);
     },
@@ -32,6 +42,11 @@ export default {
       const req = await fetch(`${process.env.VUE_APP_API_URL}/spotify/playlist/${playlistId}`);
       const res = await req.json();
       commit('setCurrentPlaylist', res);
+    },
+    async startCopy(_, payload) {
+      const req = await fetch(`${process.env.VUE_APP_API_URL}/spotify/playlist/${payload.playlistId}/copy`);
+      const  res = await req.json();
+      return res;
     }
   },
   mutations: {
@@ -45,6 +60,9 @@ export default {
 
     setCurrentPlaylist(state, playlist) {
       state.playlist = playlist;
+    },
+    setCurrentPage(state, page) {
+      state.page = page;
     }
   }
 }

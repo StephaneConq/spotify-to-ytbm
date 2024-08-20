@@ -1,6 +1,7 @@
 import requests
 import json
 import time
+from .ytbm import YoutubeMusic
 
 class Spotify:
     _credentials = None
@@ -101,3 +102,32 @@ class Spotify:
             raise
 
         return res
+
+    def copy_playlist_task(self, playlist_id):
+        limit = 50
+        page = 1
+        youtube_tracks = []
+        youtube_music = YoutubeMusic()
+
+        playlist = self.get_playlist(playlist_id)
+
+        while True:
+            spotify_tracks = self.list_tracks(playlist_id, page, limit)
+            for track_object in spotify_tracks:
+                track = track_object.get('track')
+                name = f"{track.get('name')} - {', '.join([a.get('name') for a in track.get('artists')])}"
+                searched_tracks = youtube_music.search_one(name)
+                
+                if len(searched_tracks):
+                    youtube_tracks.append(searched_tracks[0].get('videoId'))
+                    print(f"found {name} and added it to the playlist")
+            
+            if  len(spotify_tracks) < limit:
+                break
+            page += 1
+        playlist_id = youtube_music.create_playlist({
+            "name": playlist.get('name'),
+            "description": playlist.get('description')
+        })
+        youtube_music.add_musics_to_playlists(playlist_id, youtube_tracks)
+        print(f"all done, {playlist.get('name')} created")

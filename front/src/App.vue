@@ -1,18 +1,33 @@
 <template>
   <v-progress-linear v-if="loading" color="primary" indeterminate></v-progress-linear>
   <main>
-    <v-img class="img" :width="200" cover
-    src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Spotify_logo_without_text.svg/2048px-Spotify_logo_without_text.svg.png"></v-img>
-  <router-view />
+    <div class="toolbar-container">
+      <div>
+        <v-btn icon="mdi-arrow-left" @click="$router.push('/')"></v-btn>
+      </div>
+
+      <img class="img" src="logo.png" />
+
+      <div></div>
+    </div>
+
+    <router-view />
   </main>
-  
+  <ConfirmDialog />
+  <ToastDialog />
 </template>
 
 <script>
-import {computed} from 'vue';
-import {useStore} from 'vuex';
+import { computed } from 'vue';
+import { useStore } from 'vuex';
+import ConfirmDialog from '@/components/ConfirmDialog.vue';
+import ToastDialog from '@/components/Toast.vue';
 
 export default {
+  components: {
+    ConfirmDialog,
+    ToastDialog
+  },
   setup() {
     const store = useStore();
     const loading = computed(() => store.getters['utils/loading']);
@@ -20,7 +35,6 @@ export default {
     return {
       loading
     }
-
   }
 }
 
@@ -44,18 +58,13 @@ main {
 
 .img {
   margin: 10px;
+  width: 200px;
 }
 
-nav {
-  padding: 30px;
-}
-
-nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-nav a.router-link-exact-active {
-  color: #42b983;
+.toolbar-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
 }
 </style>

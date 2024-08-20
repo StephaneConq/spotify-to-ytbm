@@ -28,7 +28,8 @@ The project consists of two main folders:
 3. Activate the virtual environment using `source venv/bin/activate`.
 4. Install dependencies using `pip install -r requirements.txt`.
 5. Generate an `oauth.json` file using the instructions provided by [ytmusicapi](https://ytmusicapi.readthedocs.io/en/stable/setup/oauth.html).
-6. Run the backend server using `uvicorn main:app --host 0.0.0.0 --port 8000` or via debugger in vscode.
+6. Create a `spotify.json` with `client_id` and `client_secret` filled with the Spotify credentials
+7. Run the backend server using `uvicorn main:app --host 0.0.0.0 --port 8000` or via debugger in vscode.
 
 ## Usage
 -----
