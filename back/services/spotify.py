@@ -111,6 +111,11 @@ class Spotify:
 
         playlist = self.get_playlist(playlist_id)
 
+        ytb_playlist_id = youtube_music.create_playlist({
+            "name": playlist.get('name'),
+            "description": playlist.get('description')
+        })
+        cpt = 0
         while True:
             spotify_tracks = self.list_tracks(playlist_id, page, limit)
             for track_object in spotify_tracks:
@@ -119,15 +124,20 @@ class Spotify:
                 searched_tracks = youtube_music.search_one(name)
                 
                 if len(searched_tracks):
-                    youtube_tracks.append(searched_tracks[0].get('videoId'))
-                    print(f"found {name} and added it to the playlist")
+                    print(f"found {name}")
+                    res = youtube_music.add_musics_to_playlists(ytb_playlist_id, [searched_tracks[0].get('videoId')])
+                    if res.get('status') == 'STATUS_SUCCEEDED':
+                        print("added to playlist")
+                        cpt += 1
+                    else:
+                        print(f'Addition of {name} failed')
+                        print(f'Status: {res.get("status")}')
+                else:
+                    print(f"{name} not found")
             
             if  len(spotify_tracks) < limit:
                 break
             page += 1
-        playlist_id = youtube_music.create_playlist({
-            "name": playlist.get('name'),
-            "description": playlist.get('description')
-        })
-        youtube_music.add_musics_to_playlists(playlist_id, youtube_tracks)
+
         print(f"all done, {playlist.get('name')} created")
+        print(f"added {cpt} songs to the playlist")
